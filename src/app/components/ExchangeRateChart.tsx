@@ -14,9 +14,17 @@ import { ExchangeRateData } from "../hooks/useExchangeRate";
 
 type ExchangeRateChartProps = {
   data: ExchangeRateData[];
+  title?: string; // タイトルを指定可能にする
+  valueLabel?: string; // ツールチップで値の横に表示するラベル（"レート"、"価格"など）
+  valueSuffix?: string; // ツールチップで値に付加する単位（"円"など）
 };
 
-export default function ExchangeRateChart({ data }: ExchangeRateChartProps) {
+export default function ExchangeRateChart({
+  data,
+  title = "過去1年間のドル円為替レート",
+  valueLabel = "レート",
+  valueSuffix = "円",
+}: ExchangeRateChartProps) {
   // データが存在しない場合
   if (!data || data.length === 0) {
     return <div className="p-4 text-center">データが存在しません</div>;
@@ -41,7 +49,7 @@ export default function ExchangeRateChart({ data }: ExchangeRateChartProps) {
 
   return (
     <div className="w-full h-[500px] p-4">
-      <h2 className="text-xl font-bold mb-4">過去1年間のドル円為替レート</h2>
+      <h2 className="text-xl font-bold mb-4">{title}</h2>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={data}
@@ -65,7 +73,10 @@ export default function ExchangeRateChart({ data }: ExchangeRateChartProps) {
             labelFormatter={(label) =>
               `日付: ${dayjs(label).format("YYYY-MM-DD")}`
             }
-            formatter={(value: any) => [`${value.toFixed(2)}円`, "レート"]}
+            formatter={(value: any) => [
+              `${value.toFixed(2)}${valueSuffix}`,
+              valueLabel,
+            ]}
           />
           <Line
             type="monotone"
