@@ -6,9 +6,15 @@ import { ExchangeRateData } from "../hooks/useExchangeRate";
 
 type ExchangeRateTableProps = {
   data: ExchangeRateData[];
+  title?: string;
+  unitLabel?: string;
 };
 
-export default function ExchangeRateTable({ data }: ExchangeRateTableProps) {
+export default function ExchangeRateTable({
+  data,
+  title = "過去1年間のドル円為替レート（日別）",
+  unitLabel = "レート（円/ドル）",
+}: ExchangeRateTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -37,18 +43,14 @@ export default function ExchangeRateTable({ data }: ExchangeRateTableProps) {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">
-        過去1年間のドル円為替レート（日別）
-      </h2>
+      <h2 className="text-xl font-bold mb-4">{title}</h2>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr className="bg-gray-100">
               <th className="py-2 px-4 border-b text-left">日付</th>
-              <th className="py-2 px-4 border-b text-right">
-                レート（円/ドル）
-              </th>
+              <th className="py-2 px-4 border-b text-right">{unitLabel}</th>
             </tr>
           </thead>
           <tbody>

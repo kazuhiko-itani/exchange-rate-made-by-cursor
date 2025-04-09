@@ -1,24 +1,24 @@
 "use client";
 
 import { Suspense } from "react";
-import { useYearlyUsdJpyRate } from "./hooks/useExchangeRate";
-import ExchangeRateChart from "./components/ExchangeRateChart";
-import ExchangeRateTable from "./components/ExchangeRateTable";
+import { useYearlyBitcoinPrice } from "../hooks/useBitcoinPrice";
+import ExchangeRateChart from "../components/ExchangeRateChart";
+import ExchangeRateTable from "../components/ExchangeRateTable";
 import Link from "next/link";
 
-export default function Home() {
-  const { data, isLoading, isError } = useYearlyUsdJpyRate();
+export default function BitcoinPage() {
+  const { data, isLoading, isError } = useYearlyBitcoinPrice();
 
   return (
     <main className="min-h-screen p-6 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">過去1年間のドル円為替レート</h1>
+          <h1 className="text-3xl font-bold">過去1年間のビットコイン価格</h1>
           <Link
-            href="/bitcoin"
+            href="/"
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
-            ビットコイン価格を見る
+            ドル円レートに戻る
           </Link>
         </div>
       </div>
@@ -47,7 +47,12 @@ export default function Home() {
                 <div className="p-4 text-center">グラフを読み込み中...</div>
               }
             >
-              <ExchangeRateChart data={data || []} />
+              <ExchangeRateChart
+                data={data || []}
+                title="過去1年間のビットコイン価格推移"
+                valueLabel="価格"
+                valueSuffix="ドル"
+              />
             </Suspense>
 
             <div className="border-t border-gray-200 mt-4"></div>
@@ -57,14 +62,20 @@ export default function Home() {
                 <div className="p-4 text-center">テーブルを読み込み中...</div>
               }
             >
-              <ExchangeRateTable data={data || []} />
+              <ExchangeRateTable
+                data={data || []}
+                title="過去1年間のビットコイン価格（日別）"
+                unitLabel="価格（米ドル）"
+              />
             </Suspense>
           </div>
         )}
       </div>
 
       <footer className="mt-10 text-center text-sm text-gray-500">
-        <p>© {new Date().getFullYear()} 為替レート表示アプリ</p>
+        <p>
+          © {new Date().getFullYear()} ビットコイン価格・為替レート表示アプリ
+        </p>
       </footer>
     </main>
   );
