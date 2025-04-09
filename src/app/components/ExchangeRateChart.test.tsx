@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
-import ExchangeRateChart from "./ExchangeRateChart";
+import { ExchangeRateChart } from "./ExchangeRateChart";
 
 // Rechartsのサイズ計算に関するエラーを抑制
 vi.mock("recharts", () => {

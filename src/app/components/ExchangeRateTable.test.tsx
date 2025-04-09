@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import ExchangeRateTable from "./ExchangeRateTable";
+import { ExchangeRateTable } from "./ExchangeRateTable";
 
 describe("ExchangeRateTable", () => {
   // データが存在しない場合に適切なメッセージを表示するかテスト

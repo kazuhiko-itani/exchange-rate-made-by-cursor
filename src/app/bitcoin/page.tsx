@@ -2,8 +2,8 @@
 
 import { Suspense } from "react";
 import { useYearlyBitcoinPrice } from "../hooks/useBitcoinPrice";
-import ExchangeRateChart from "../components/ExchangeRateChart";
-import ExchangeRateTable from "../components/ExchangeRateTable";
+import { ExchangeRateChart } from "../components/ExchangeRateChart";
+import { ExchangeRateTable } from "../components/ExchangeRateTable";
 import Link from "next/link";
 
 export default function BitcoinPage() {

@@ -10,7 +10,7 @@ type ExchangeRateTableProps = {
   unitLabel?: string;
 };
 
-export default function ExchangeRateTable({
+export function ExchangeRateTable({
   data,
   title = "過去1年間のドル円為替レート（日別）",
   unitLabel = "レート（円/ドル）",

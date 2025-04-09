@@ -19,7 +19,7 @@ type ExchangeRateChartProps = {
   valueSuffix?: string; // ツールチップで値に付加する単位（"円"など）
 };
 
-export default function ExchangeRateChart({
+export function ExchangeRateChart({
   data,
   title = "過去1年間のドル円為替レート",
   valueLabel = "レート",
