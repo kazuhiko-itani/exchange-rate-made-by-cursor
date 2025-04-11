@@ -18,6 +18,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "critters": "^0.0.25",
     "dayjs": "^1.11.10",
     "next": "14.1.0",
     "react": "^18.2.0",
