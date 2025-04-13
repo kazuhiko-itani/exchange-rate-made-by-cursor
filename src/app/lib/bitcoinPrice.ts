@@ -83,3 +83,55 @@ function generateMockBitcoinData(): ExchangeRateData[] {
 
   return formattedData;
 }
+
+// サーバーサイドでビットコイン価格を取得する関数（1時間キャッシュ）
+export async function getYearlyBitcoinPrice() {
+  try {
+    // 現在の日付から1年前までの日付を計算
+    const endDate = dayjs();
+    const startDate = dayjs().subtract(1, "year");
+
+    // CoinGeckoのAPIでは、from, toをUNIXタイムスタンプ（秒）で指定
+    const from = Math.floor(startDate.valueOf() / 1000);
+    const to = Math.floor(endDate.valueOf() / 1000);
+
+    // APIリクエスト
+    const response = await fetch(
+      `${API_URL}/coins/bitcoin/market_chart/range?vs_currency=usd&from=${from}&to=${to}`,
+      {
+        next: { revalidate: 3600 }, // 1時間キャッシュ
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("API request failed");
+    }
+
+    const data = await response.json();
+
+    // APIレスポンスのpricesは[timestamp, price]の配列形式
+    // 日付文字列とレートに変換する
+    const formattedData = data.prices.map((item: [number, number]) => {
+      return {
+        date: dayjs(item[0]).format("YYYY-MM-DD"),
+        rate: parseFloat(item[1].toFixed(2)),
+      };
+    });
+
+    // 日付でグループ化して1日1件のデータにする
+    // 同じ日のデータがある場合は最後のデータを使用
+    const groupedByDate = formattedData.reduce(
+      (acc: Record<string, ExchangeRateData>, curr: ExchangeRateData) => {
+        acc[curr.date] = curr;
+        return acc;
+      },
+      {}
+    );
+
+    return Object.values(groupedByDate);
+  } catch (error) {
+    console.error("Failed to fetch Bitcoin prices:", error);
+    // API制限などの理由で失敗した場合のフォールバック
+    return generateMockBitcoinData();
+  }
+}
