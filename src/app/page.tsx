@@ -10,7 +10,7 @@ export default function Home() {
           為替・暗号資産レート表示アプリ
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-6 mt-8">
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
           <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
             <h2 className="text-2xl font-semibold mb-4">ドル円為替レート</h2>
             <p className="text-gray-600 mb-6">
@@ -34,6 +34,19 @@ export default function Home() {
               className="block w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-center"
             >
               ビットコイン価格を表示する
+            </Link>
+          </div>
+
+          <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <h2 className="text-2xl font-semibold mb-4">シミュレーション</h2>
+            <p className="text-gray-600 mb-6">
+              ビットコイン購入のシミュレーションを行うことができます。
+            </p>
+            <Link
+              href="/simulate"
+              className="block w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-center"
+            >
+              シミュレーションを行う
             </Link>
           </div>
         </div>
