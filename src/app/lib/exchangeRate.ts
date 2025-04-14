@@ -50,3 +50,49 @@ export async function fetchYearlyUsdJpyRate() {
     throw error;
   }
 }
+
+// サーバーサイドで為替レートを取得する関数（1時間キャッシュ）
+export async function getYearlyUsdJpyRate() {
+  try {
+    // 現在のレートを取得
+    const response = await fetch(`${API_URL}/latest/USD`, {
+      next: { revalidate: 3600 }, // 1時間キャッシュ
+    });
+
+    if (!response.ok) {
+      throw new Error("API request failed");
+    }
+
+    const data = await response.json();
+    const currentRate = data.rates.JPY;
+
+    // 過去1年間の日付を生成
+    const endDate = dayjs();
+    const startDate = dayjs().subtract(1, "year");
+
+    // 日付とレートのデータを生成
+    const formattedData = [];
+    let currentDate = startDate;
+
+    while (
+      currentDate.isBefore(endDate) ||
+      currentDate.isSame(endDate, "day")
+    ) {
+      // 疑似的な変動を加える（±3%程度のランダム変動）
+      const randomFactor = 0.97 + Math.random() * 0.06;
+      const simulatedRate = currentRate * randomFactor;
+
+      formattedData.push({
+        date: currentDate.format("YYYY-MM-DD"),
+        rate: parseFloat(simulatedRate.toFixed(2)),
+      });
+
+      currentDate = currentDate.add(1, "day");
+    }
+
+    return formattedData;
+  } catch (error) {
+    console.error("Failed to fetch exchange rates:", error);
+    throw error;
+  }
+}
