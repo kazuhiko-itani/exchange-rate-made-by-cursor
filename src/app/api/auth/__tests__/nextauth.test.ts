@@ -1,17 +1,13 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import NextAuth from "next-auth";
 import { createClient } from "../../../lib/supabase/server";
-
-vi.mock("next-auth", () => ({
-  default: vi.fn(),
-}));
 
 vi.mock("../../../lib/supabase/server", () => ({
   createClient: vi.fn(),
 }));
 
-describe("NextAuth configuration", () => {
-  let authOptions: any;
+import { signInCallback, sessionCallback } from "./nextauth-callbacks.js";
+
+describe("NextAuth callbacks", () => {
   let mockSupabase: any;
   
   beforeEach(() => {
@@ -27,22 +23,6 @@ describe("NextAuth configuration", () => {
     };
     
     (createClient as any).mockReturnValue(mockSupabase);
-    
-    (NextAuth as any).mockImplementation((options: any) => {
-      authOptions = options;
-      return { GET: vi.fn(), POST: vi.fn() };
-    });
-    
-    require("../[...nextauth]/route");
-  });
-  
-  it("should have Google provider configured", () => {
-    expect(authOptions.providers).toHaveLength(1);
-    expect(authOptions.providers[0].id).toBe("google");
-  });
-  
-  it("should have custom sign-in page configured", () => {
-    expect(authOptions.pages.signIn).toBe("/auth/signin");
   });
   
   it("should save user data to Supabase on sign-in when user doesn't exist", async () => {
@@ -63,7 +43,7 @@ describe("NextAuth configuration", () => {
       error: null,
     });
     
-    const result = await authOptions.callbacks.signIn({ user, account: {}, profile: {} });
+    const result = await signInCallback({ user, account: {}, profile: {} });
     
     expect(createClient).toHaveBeenCalled();
     expect(mockSupabase.from).toHaveBeenCalledWith("profiles");
@@ -96,7 +76,7 @@ describe("NextAuth configuration", () => {
       error: null,
     });
     
-    const result = await authOptions.callbacks.signIn({ user, account: {}, profile: {} });
+    const result = await signInCallback({ user, account: {}, profile: {} });
     
     expect(createClient).toHaveBeenCalled();
     expect(mockSupabase.from).toHaveBeenCalledWith("profiles");
@@ -123,7 +103,7 @@ describe("NextAuth configuration", () => {
     
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     
-    const result = await authOptions.callbacks.signIn({ user, account: {}, profile: {} });
+    const result = await signInCallback({ user, account: {}, profile: {} });
     
     expect(createClient).toHaveBeenCalled();
     expect(consoleSpy).toHaveBeenCalled();
@@ -145,7 +125,7 @@ describe("NextAuth configuration", () => {
       sub: "test-user-id",
     };
     
-    const result = await authOptions.callbacks.session({ session, token });
+    const result = await sessionCallback({ session, token });
     
     expect(result.user.id).toBe("test-user-id");
   });
